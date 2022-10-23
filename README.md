@@ -33,7 +33,7 @@ between a task and a command.  This helps make it more obvious that your new
 task is repository-specific, and makes it easier to keep the set of shared
 commands up-to-date with the latest improvements.
 
-See [`tasks/README.md`](tasks/README.md) and [`commands/README.md`](commands/README.md) for
+See [`tasks/README.md`](.run/tasks/README.md) and [`commands/README.md`](.run/commands/README.md) for
 more information about how tasks and commands are defined, and how to create and modify them.
 
 ## Required Tasks
