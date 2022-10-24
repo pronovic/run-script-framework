@@ -44,6 +44,7 @@ The following tasks must always be defined if you want to use the standard
 - install
 - format
 - checks
+- build
 - test
 - suite
 
