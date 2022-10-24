@@ -1,0 +1,56 @@
+#!/usr/bin/env bash
+# vim: set ft=bash ts=3 sw=3 expandtab:
+# Push shared code into an existing repository.
+
+# The general rule is that individual repos may customize only tasks, not any
+# of the other code.  This means that when synchronizing shared code, it's always
+# safe to overwrite the run script, util.sh, and all of the command scripts.
+#
+# For tasks, we replace only standard, non-customized tasks.  We never add a
+# new task that does not already exist in the repo.  A repo can flag a
+# customized task using a marker comment "# runscript: customized=true".  If
+# this marker is found in first 5 lines of code, then the script is considered
+# customized and will be ignored.
+
+if [ $# != 1 ]; then
+   echo "usage: push <target-repo-dir>"
+   exit 1
+fi
+
+TARGET_DIR=$(echo "$(cd $(dirname "$1");pwd)/$(basename "$1")") # get the absolute path
+
+if [ ! -d "$TARGET_DIR" ]; then
+   echo "Target repository does not exist: $TARGET_DIR"
+   exit 1
+fi
+
+if [ ! -f "$TARGET_DIR/run" ] || [ ! -d "$TARGET_DIR/.run/commands" ]; then
+   echo "Common run script framework not found in repository: $TARGET_DIR"
+   exit 1
+fi
+
+echo -n "Synchronizing run script..."
+cp -f run "$TARGET_DIR/run"
+echo "done"
+
+echo -n "Synchronizing util.sh script..."
+cp -f util.sh "$TARGET_DIR/.run/util.sh"
+echo "done"
+
+echo -n "Synchronizing all commands..."
+cp -f commands/*.sh "$TARGET_DIR/.run/commands"
+echo "done"
+
+echo -n "Synchronizing non-customized tasks..."
+cd tasks
+for TASK in *.sh; do
+   TARGET="$TARGET_DIR/.run/tasks/$TASK"
+   if [ -f "$TARGET" ]; then
+      head -5 "$TARGET" | grep -q "^# runscript: customized=true"
+      if [ $? != 0 ]; then
+         cp -f $TASK "$TARGET"
+      fi
+   fi
+done
+echo "done"
+

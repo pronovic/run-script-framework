@@ -64,3 +64,34 @@ These tasks exist for easy integration with Pycharm, so it's possible to use
 `run mypy` or `run pylint` from external tools configuration.  If you don't
 want to use one of these tools, just change the task to a no-op (i.e. `echo
 "MyPy is not used in this repo"`).
+
+## Synchronizing Shared Code
+
+This repository is meant to be the source of record for all shared code.  When
+code is changed in a repository that uses the framework, it should be pulled in
+here.  When changes are made here, they should be pushed to other repositories
+that use the framework.  The `pull` and `push` scripts are used for this
+purpose.
+
+Both scripts are intended to be run from within this repository.  To pull
+changes from another repository into this repository, use `pull`:
+
+```
+$ pull ../apologies
+Synchronizing run script...done
+Synchronizing util.sh script...done
+Synchronizing all commands...done
+Synchronizing non-customized tasks...done
+```
+
+To push changes from this repository to another repository, use `push`:
+
+```
+$ push ../apologies
+Synchronizing run script...done
+Synchronizing util.sh script...done
+Synchronizing all commands...done
+Synchronizing non-customized tasks...done
+```
+
+Once the push or pull operation is done, you still need to commit your changes.
