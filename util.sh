@@ -54,15 +54,26 @@ basic_tasks() {
    echo "$BASIC_TASKS"
 }
 
-# Get a list of all tasks, excluding basic tasks
-all_tasks() {
+# Get a list of additional tasks that have help, excluding basic tasks
+additional_tasks() {
+   local TASK
    cd "$DOTRUN_DIR/tasks" 
-   ls *.sh | sed 's/\.sh$//' | sort | egrep -v "$BASIC_TASKS_REGEX"
+   for TASK in $(ls *.sh | sed 's/\.sh$//' | sort | egrep -v "$BASIC_TASKS_REGEX"); do
+      if task_has_help "$TASK"; then
+         echo "$TASK"
+      fi
+   done
+   cd - >/dev/null
 }
 
 # Check whether a task exists
 task_exists() {
    [ -f "$DOTRUN_DIR/tasks/$1.sh" ]
+}
+
+# Check whether has a help string
+task_has_help() {
+   [ ! -z "$(task_help "$1")" ]
 }
 
 # Run a task
