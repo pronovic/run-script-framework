@@ -3,7 +3,7 @@
 
 # This is the set of basic tasks that must always exist
 BASIC_TASKS="install format checks test suite"
-BASIC_TASKS_REGEX="install|format|checks|test|suite"
+BASIC_TASKS_REGEX="^install$|^format$|^checks$|^test$|^suite$"
 
 # Run a command
 run_command() {
