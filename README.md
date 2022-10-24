@@ -71,27 +71,15 @@ This repository is meant to be the source of record for all shared code.  When
 code is changed in a repository that uses the framework, it should be pulled in
 here.  When changes are made here, they should be pushed to other repositories
 that use the framework.  The `pull` and `push` scripts are used for this
-purpose.
+purpose.  Both scripts are intended to be run from within this repository. 
 
-Both scripts are intended to be run from within this repository.  To pull
-changes from another repository into this repository, use `pull`:
+The general rule is that individual repos may customize only tasks, not any of
+the other code.  We pull in only non-customized tasks.  If the source
+repository contains a new task that doesn't already exist here, we will pull it
+in as long as it's not a customized task.  We push only standard,
+non-customized tasks.  We never add a new task that does not already exist in
+the repo.
 
-```
-$ pull ../apologies
-Synchronizing run script...done
-Synchronizing util.sh script...done
-Synchronizing all commands...done
-Synchronizing non-customized tasks...done
-```
-
-To push changes from this repository to another repository, use `push`:
-
-```
-$ push ../apologies
-Synchronizing run script...done
-Synchronizing util.sh script...done
-Synchronizing all commands...done
-Synchronizing non-customized tasks...done
-```
-
-Once the push or pull operation is done, you still need to commit your changes.
+A repo can flag a customized task using a marker comment `# runscript:
+customized=true`.  If this marker is found in first 5 lines of code, then the
+script is considered customized and will be ignored.
