@@ -97,3 +97,10 @@ setup_environment() {
    trap "rm -rf '$WORKING_DIR'" EXIT SIGINT SIGTERM
 }
 
+# Add addendum information to the end of the help output
+add_addendum() {
+   if [ -f "$REPO_DIR/.run/addendum.sh" ]; then
+      bash "$REPO_DIR/.run/addendum.sh"
+   fi 
+}
+
