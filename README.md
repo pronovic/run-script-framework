@@ -80,6 +80,11 @@ in as long as it's not a customized task.  We push only standard,
 non-customized tasks.  We never add a new task that does not already exist in
 the repo.
 
-A repo can flag a customized task using a marker comment `# runscript:
-customized=true`.  If this marker is found in first 5 lines of code, then the
-script is considered customized and will be ignored.
+A repo can flag a customized task using a marker comment:
+
+```bash
+# runscript: customized=true
+```
+
+If this marker is found in first 5 lines of code, then the script is considered
+customized and will be ignored.
