@@ -7,8 +7,8 @@ repositories that use the Poetry build tool.
 
 The original `run` script implementation was prototyped in the
 [apologies](https://github.com/pronovic/apologies) demonstration project.  In
-first few years after apologies was written, I used it as a basis for a lot of
-other production code, copying around and customizing the `run` script each
+the first few years after apologies was written, I used it as a basis for a lot
+of other production code, copying around and customizing the `run` script each
 time.
 
 Eventually, that became awkward.  It required too much effort to keep the `run`
