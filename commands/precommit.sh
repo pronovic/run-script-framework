@@ -3,8 +3,7 @@
 
 command_precommit() {
    echo -n "Installing pre-commit hooks..."
-   git -C . rev-parse 2>/dev/null # check whether it's a Git repository
-   if [ $? == 0 ]; then
+   if git rev-parse --git-dir > /dev/null 2>&1; then
       poetry_run pre-commit install
    else
       echo "not a Git repository"
