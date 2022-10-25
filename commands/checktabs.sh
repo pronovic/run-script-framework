@@ -12,8 +12,10 @@ command_checktabs() {
    if [ $? == 0 ]; then
       result=$(grep -l "$(printf '\t')" $(git ls-files | grep -v -x -F --file=".tabignore"))
       if [ $? == 0 ]; then
-         echo "❌ Some files contain tab characters"
+         echo "❌ Some files contain tab characters:"
+         echo ""
          echo "${result}"
+         echo ""
          exit 1
       fi
    fi
