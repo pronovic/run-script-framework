@@ -26,16 +26,7 @@ command_requirements() {
       exit 1
    fi
 
-   replacement='s|python_version >= "3\.[0-9][0-9]*"|python_version >= "3.7"|g'
-   sed --version 2>&1 | grep -iq "GNU sed"
-   if [ $? = 0 ]; then
-      # GNU sed accepts a bare -i and assumes no backup file
-      sed -i "$replacement" docs/requirements.txt
-   else
-      # BSD sed requires you to set an empty backup file extension
-      sed -i "" "$replacement" docs/requirements.txt
-   fi
-
+   run_command sedreplace 's|python_version >= "3\.[0-9][0-9]*"|python_version >= "3.7"|g' docs/requirements.txt
    run_command dos2unix docs/requirements.txt
 
    echo "done"
