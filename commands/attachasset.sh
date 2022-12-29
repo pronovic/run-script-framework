@@ -52,7 +52,7 @@ EOF
 
    # Retrieve the upload URL
    UPLOAD_URL=$(curl -X GET --config "$OPTIONS" "$RELEASE_URL" | jq -r '.upload_url' | cut -d'{' -f1)
-   if [ "$UPLOAD_URL" == "null" ]; then
+   if [ $? != 0 ] || [ "$UPLOAD_URL" == "null" ]; then
       echo "Failed to retrieve upload URL"
       exit 1
    fi
@@ -66,5 +66,9 @@ EOF
       -H "Content-Length: $(wc -c <$ASSET_PATH | xargs)" \
       -T "$ASSET_PATH" \
       "$UPLOAD_URL?name=$(basename $ASSET_PATH)" | jq
+   if [ $? != 0 ]; then
+      echo "Failed to attach asset"
+      exit 1
+   fi
 
 }

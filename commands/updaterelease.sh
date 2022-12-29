@@ -5,6 +5,10 @@
 #
 #   $GITHUB_API_URL - the base URL for the GitHub API
 #   $API_TOKEN - a GitHub API token with repository scope
+#
+# Updating a release is a multi-step process.  First, you have to query the
+# release to get its update URL, and then you need to PATCH to that URL to
+# actually update the release.
 
 command_updaterelease() {
 
@@ -41,10 +45,14 @@ EOF
    jq -n '$ARGS.named' \
      --arg 'name' "Release $RELEASE" \
      --arg 'body' "$(cat '$RELEASE_NOTES')" > "$BODY"
+   if [ $? != 0 ]; then
+      echo "Failed to create JSON body"
+      exit 1
+   fi
 
    # Retrieve the update URL
    UPDATE_URL=$(curl -X GET --config "$OPTIONS" "$RELEASE_URL" | jq -r '.url')
-   if [ "$UPDATE_URL" == "null" ]; then
+   if [ $? != 0 ] || [ "$UPDATE_URL" == "null" ]; then
       echo "Failed to retrieve update URL"
       exit 1
    fi
@@ -56,5 +64,9 @@ EOF
       -H "Accept: application/vnd.github.v3+json" \
       --data-binary "@$BODY" \
       "$UPDATE_URL" | jq
+   if [ $? != 0 ]; then
+      echo "Failed to update the release"
+      exit 1
+   fi
 
 }
