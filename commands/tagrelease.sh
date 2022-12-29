@@ -2,7 +2,7 @@
 # Update the changelog and tag a specific version of the code
 
 command_tagrelease() {
-   local VERSION EARLIEST_YEAR LATEST_YEAR DEFAULT_BRANCH CURRENT_BRANCH COPYRIGHT DATE TAG FILES MESSAGE
+   local VERSION DATE TAG FILES MESSAGE
 
    if [ $# != 1 ]; then
       echo "tagrelease <version>"
@@ -10,20 +10,10 @@ command_tagrelease() {
    fi
 
    VERSION=$(echo "$1" | sed 's/^v//') # so you can use "0.1.5 or "v0.1.5"
-   EARLIEST_YEAR=$(git log --pretty="%ci" $(git rev-list --max-parents=0 HEAD) | sed 's/-.*$//g')
-   LATEST_YEAR=$(git log -1 --pretty="%ci" | sed 's/-.*$//g')
-   DEFAULT_BRANCH=$(git config --get init.defaultBranch)  # works on git > 2.28.0 from 2020
-   CURRENT_BRANCH=$(git branch -a | grep '^\*' | sed 's/^\* //')
    DATE=$(date +'%d %b %Y')
    TAG="v$VERSION" # follow PEP 440 naming convention
    FILES="NOTICE pyproject.toml Changelog"
    MESSAGE="Release v$VERSION to PyPI"
-
-   if [ "$EARLIEST_YEAR" == "$LATEST_YEAR" ]; then
-      COPYRIGHT="${EARLIEST_YEAR}"
-   else
-      COPYRIGHT="${EARLIEST_YEAR}-${LATEST_YEAR}"
-   fi
 
    if [ "$CURRENT_BRANCH" != "$DEFAULT_BRANCH" ]; then
       echo "*** You are not on $DEFAULT_BRANCH; you cannot release from this branch"
