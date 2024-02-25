@@ -89,3 +89,25 @@ A repo can flag a customized task using a marker comment:
 
 If this marker is found in first 5 lines of code, then the script is considered
 customized and will be ignored.
+
+## Poetry Version & Configuration
+
+This framework was originally developed for Poetry v1.2.0 or greater.
+Currently, it assumes you are using Poetry v1.8.0 or greater.
+
+In older versions of Poetry, there were sometimes problems related to the
+Python keyring, which this framework dealt with by explicitly disabling the
+keyring via the `$PYTHON_KEYRING_BACKEND` environment variable (see [issue #2692](https://github.com/python-poetry/poetry/issues/2692#issuecomment-1235683370)).
+
+Starting with Poetry v1.8.0, there is config option [keyring.enabled](https://python-poetry.org/docs/configuration/#keyringenabled), 
+which you can use to explicitly disable use of the keyring:
+
+```
+$ poetry config keyring.enabled false --local
+$ cat poetry.toml
+[keyring]
+enabled = false
+```
+
+Now that this configuration option is available, there is no need for the hack-ish
+workaround, so this framework no longer sets `$PYTHON_KEYRING_BACKEND`.
