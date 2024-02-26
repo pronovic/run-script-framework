@@ -42,6 +42,7 @@ The following tasks must always be defined if you want to use the standard
 `run` script:
 
 - install
+- outdated
 - format
 - checks
 - build
