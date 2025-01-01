@@ -115,7 +115,7 @@ setup_environment() {
    WORKING_DIR=$(mktemp -d)
    trap "rm -rf '$WORKING_DIR'" EXIT SIGINT SIGTERM
 
-   DEFAULT_BRANCH=$(git config --get init.defaultBranch)  # works on git > 2.28.0 from 2020
+   DEFAULT_BRANCH=$(git symbolic-ref refs/remotes/origin/HEAD | sed 's@^refs/remotes/origin/@@')
    CURRENT_BRANCH=$(git branch -a | grep '^\*' | sed 's/^\* //')
 }
 
