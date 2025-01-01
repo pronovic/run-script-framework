@@ -50,7 +50,7 @@ The following tasks must always be defined if you want to use the standard
 - suite
 
 These tasks are needed to set up the local development environment, and they're
-also needed by the standard GitHub Actions build in [gha-shared-workflows](https://github.com/pronovic/gha-shared-workflows/blob/master/.github/workflows/poetry-build-and-test.yml).  They 
+also needed by the standard GitHub Actions build in [gha-shared-workflows](https://github.com/pronovic/gha-shared-workflows/blob/main/.github/workflows/poetry-build-and-test.yml).  They 
 are called out separately as "basic tasks" in the help output for the `run`
 script.  All other tasks are listed in alphabetical order in a separate help
 section.  You can change the definition of these tasks to meet the needs of
