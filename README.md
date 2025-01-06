@@ -3,6 +3,39 @@
 This is an extensible run script framework that is shared between my Python
 repositories that use the Poetry build tool.
 
+## Purpose
+
+In my Python repositories, the `run` script is the entry point for developers
+and for the GitHub Actions CI/CD process.  It wraps `poetry` and other build
+tools to standardize various common tasks.  Here's what it looks like in 
+the [apologies](https://github.com/pronovic/apologies) demonstration project:
+
+```
+------------------------------------
+Shortcuts for common developer tasks
+------------------------------------
+
+Basic tasks:
+
+- run install: Setup the virtualenv via Poetry and install pre-commit hooks
+- run outdated: Find top-level dependencies with outdated constraints
+- run format: Run the code formatters
+- run checks: Run the code checkers
+- run build: Build artifacts in the dist/ directory
+- run test: Run the unit tests
+- run test -c: Run the unit tests with coverage
+- run test -ch: Run the unit tests with coverage and open the HTML report
+- run suite: Run the complete test suite, as for the GitHub Actions CI build
+
+Additional tasks:
+
+- run demo: Run a game with simulated players, displaying output on the terminal
+- run docs: Build the Sphinx documentation for readthedocs.io
+- run docs -o: Build the Sphinx documentation and open in a browser
+- run release: Tag and release the code, triggering GHA to publish artifacts
+- run sim: Run a simulation to see how well different character input sources behave
+```
+
 ## Background/History
 
 The original `run` script implementation was prototyped in the
@@ -94,7 +127,7 @@ customized and will be ignored.
 ## Poetry Version & Configuration
 
 This framework was originally developed for Poetry v1.2.0 or greater.
-Currently, it assumes you are using Poetry v1.8.0 or greater.
+Currently, it assumes you are using Poetry v2.0.0 or greater.
 
 In older versions of Poetry, there were sometimes problems related to the
 Python keyring, which this framework dealt with by explicitly disabling the
