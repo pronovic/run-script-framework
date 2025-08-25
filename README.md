@@ -26,6 +26,7 @@ Basic tasks:
 - run test -c: Run the unit tests with coverage
 - run test -ch: Run the unit tests with coverage and open the HTML report
 - run suite: Run the complete test suite, as for the GitHub Actions CI build
+- run clean: Clean the source tree
 
 Additional tasks:
 
@@ -81,6 +82,7 @@ The following tasks must always be defined if you want to use the standard
 - build
 - test
 - suite
+- clean
 
 These tasks are needed to set up the local development environment, and they're
 also needed by the standard GitHub Actions build in [gha-shared-workflows](https://github.com/pronovic/gha-shared-workflows/blob/main/.github/workflows/poetry-build-and-test.yml).  They 
