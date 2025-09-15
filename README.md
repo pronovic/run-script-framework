@@ -1,7 +1,9 @@
 # Run Script Framework
 
 This is an extensible run script framework that is shared between my Python
-repositories that use the Poetry build tool.
+repositories that use the [Poetry](https://python-poetry.org/) build tool.
+The framework is used to implement a standard build process that my 
+[shared GitHub workflows](https://github.com/pronovic/gha-shared-workflows) depend on.
 
 ## Purpose
 
