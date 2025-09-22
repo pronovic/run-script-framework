@@ -130,3 +130,33 @@ A repo can flag a customized task using a marker comment:
 
 If this marker is found in first 5 lines of code, then the script is considered
 customized and will be ignored.
+
+## Dependencies That Rely on Libraries
+
+Python packages that depend on other libraries, especially geospatial packages,
+tend to bundle those libraries along with the published artifacts on PyPI.
+This works ok as long as 1) they're bundling the version of the library that
+you need and 2) you aren't using more than one Python package that depends on
+the same library.  Otherwise, you tend to run into problems.
+
+The usual solution for this scenario is to rely on system libraries (installed
+from Debian or Homebrew, etc.).  You install each system library outside of the
+Python build process, and then you force UV to build and link the Python
+package against the system library rather than the bundled library.  This is
+done using the [no-binary-package](https://docs.astral.sh/uv/reference/settings/#no-binary-package) setting 
+in `pyproject.toml`.
+
+However, even if you do this, there are some times when you will need to force
+UV to rebuild and relink &mdash; for instance, if the system library has been
+updated, and you want UV to pick up that change.  This requires some extra
+work.  The best solution I've found is to clear those packages out of the UV
+cache:
+
+```shell
+uv cache clean $(grep '^no-binary-package' pyproject.toml | sed 's/^no-binary-package = //' | sed 's/[][,"]//g')
+```
+
+For now, I've decided not to implement this in the run script framework.  It's
+relatively rare, and I don't need it for any of the packages I'm maintaining
+today.  If/when I have a project of my own that needs this, I'll figure out the
+right way to integrate it, probably as a custom task.
