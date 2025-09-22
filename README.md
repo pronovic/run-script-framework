@@ -31,7 +31,7 @@ there are major changes to the way the integrated tools work.
 ## Purpose
 
 In my Python repositories, the `run` script is the entry point for developers
-and for the GitHub Actions CI/CD process.  It wraps `poetry` and other build
+and for the GitHub Actions CI/CD process.  It wraps `uv` and other build
 tools to standardize various common tasks.  Here's what it looks like in 
 the [apologies](https://github.com/pronovic/apologies) demonstration project:
 
@@ -113,7 +113,7 @@ The following tasks must always be defined if you want to use the standard
 - clean
 
 These tasks are needed to set up the local development environment, and they're
-also needed by the standard GitHub Actions build in [gha-shared-workflows](https://github.com/pronovic/gha-shared-workflows/blob/main/.github/workflows/poetry-build-and-test.yml).  They 
+also needed by the standard GitHub Actions build in [gha-shared-workflows](https://github.com/pronovic/gha-shared-workflows/blob/main/.github/workflows/uv-build-and-test.yml).  They 
 are called out separately as "basic tasks" in the help output for the `run`
 script.  All other tasks are listed in alphabetical order in a separate help
 section.  You can change the definition of these tasks to meet the needs of
