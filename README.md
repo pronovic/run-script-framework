@@ -22,7 +22,6 @@ Basic tasks:
 - run install: Install the Python virtualenv and pre-commit hooks
 - run update: Update all dependencies, or a subset passed as arguments
 - run outdated: Find top-level dependencies with outdated constraints
-- run rebuild: Rebuild all dependencies flagged as no-binary-package
 - run format: Run the code formatters
 - run checks: Run the code checkers
 - run build: Build artifacts in the dist/ directory
@@ -83,7 +82,6 @@ The following tasks must always be defined if you want to use the standard
 - install
 - update
 - outdated
-- rebuild
 - format
 - checks
 - build
