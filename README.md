@@ -101,14 +101,13 @@ your repository, but they must exist.
 Additionally, there are several "hidden" tasks that are not shown in the help
 output for the `run` script.
 
+The `dch` and `sync` tasks are hidden utility features that simplify day-to-day
+development but aren't worth documenting publicly.
+
 The `mypy` and `lint` tasks exist for easy integration with Pycharm.  This way,
 it's possible to use `run mypy` or `run lint` from external tools
 configuration.  If you don't want to use one of these tools, just change the
 task to a no-op (i.e.  `echo "MyPy is not used in this repo"`).
-
-The `dch` task exists to simplify my day-to-day development process.  It
-automatically adds a new changelog entry with a default version, and is based
-conceptually on the Debian tool of the same name.
 
 ## Synchronizing Shared Code
 
