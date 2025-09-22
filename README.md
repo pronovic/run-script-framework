@@ -164,7 +164,7 @@ the same library.  Otherwise, you tend to run into problems.
 
 The usual solution for this scenario is to rely on system libraries (installed
 from Debian or Homebrew, etc.).  You install each system library outside of the
-Python build process, and then you force UV to build and link the Python
+Python build process, and then you tell UV to build and link the Python
 package against the system library rather than the bundled library.  This is
 done using the [no-binary-package](https://docs.astral.sh/uv/reference/settings/#no-binary-package) setting 
 in `pyproject.toml`.
