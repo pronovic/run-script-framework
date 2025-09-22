@@ -1,9 +1,32 @@
 # Run Script Framework
 
 This is an extensible run script framework that is shared between my Python
-repositories that use the [UV](https://docs.astral.sh/uv/) build tool.  The
-framework is used to implement a standard build process that my 
-[shared GitHub workflows](https://github.com/pronovic/gha-shared-workflows) depend on.
+repositories.  The framework is used to implement a standard build process that
+my [shared GitHub workflows](https://github.com/pronovic/gha-shared-workflows)
+depend on.
+
+## Previous Standards
+
+Currently, the build process relies on the [UV](https://docs.astral.sh/uv/) build tool,
+and implements code formatting and linting using [Ruff](https://pypi.org/project/ruff/).
+I migrated to these tools starting in mid-2025. If you began using the run
+script framework prior to then, your repository probably relies on different
+standards.
+
+Two long-lived branches maintain the older functionality:
+
+- The `poetry` branch uses [Poetry](https://pypi.org/project/poetry/) as the build tool,
+and [Ruff](https://pypi.org/project/ruff/) for code formatting and linting.
+
+- The `black-isort` branch uses [Poetry](https://pypi.org/project/poetry/) as the
+build tool, [black](https://pypi.org/project/black/) and
+[isort](https://pypi.org/project/isort/) for code formatting, and
+[Pylint](https://pypi.org/project/pylint/) for linting.
+
+I don't maintain these branches any more, so as time goes on they will diverge
+from the code on the `main` branch.  However, most changes to the run script
+framework are very minor, so this code should continue to be usable unless
+there are major changes to the way the integrated tools work.
 
 ## Purpose
 
