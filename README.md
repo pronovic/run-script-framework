@@ -1,14 +1,37 @@
 # Run Script Framework
 
 This is an extensible run script framework that is shared between my Python
-repositories that use the [Poetry](https://python-poetry.org/) build tool.
-The framework is used to implement a standard build process that my 
-[shared GitHub workflows](https://github.com/pronovic/gha-shared-workflows) depend on.
+repositories.  The framework is used to implement a standard build process that
+my [shared GitHub workflows](https://github.com/pronovic/gha-shared-workflows)
+depend on.
+
+## Previous Standards
+
+Currently, the build process relies on the [UV](https://docs.astral.sh/uv/) build tool,
+and implements code formatting and linting using [Ruff](https://pypi.org/project/ruff/).
+I migrated to these tools starting in mid-2025. If you began using the run
+script framework prior to then, your repository probably relies on different
+standards.
+
+Two long-lived branches maintain the older functionality:
+
+- The `poetry` branch uses [Poetry](https://pypi.org/project/poetry/) as the build tool,
+and [Ruff](https://pypi.org/project/ruff/) for code formatting and linting.
+
+- The `black-isort` branch uses [Poetry](https://pypi.org/project/poetry/) as the
+build tool, [black](https://pypi.org/project/black/) and
+[isort](https://pypi.org/project/isort/) for code formatting, and
+[Pylint](https://pypi.org/project/pylint/) for linting.
+
+I don't maintain these branches any more, so as time goes on they will diverge
+from the code on the `main` branch.  However, most changes to the run script
+framework are very minor, so this code should continue to be usable unless
+there are major changes to the way the integrated tools work.
 
 ## Purpose
 
 In my Python repositories, the `run` script is the entry point for developers
-and for the GitHub Actions CI/CD process.  It wraps `poetry` and other build
+and for the GitHub Actions CI/CD process.  It wraps `uv` and other build
 tools to standardize various common tasks.  Here's what it looks like in 
 the [apologies](https://github.com/pronovic/apologies) demonstration project:
 
@@ -19,7 +42,8 @@ Shortcuts for common developer tasks
 
 Basic tasks:
 
-- run install: Setup the virtualenv via Poetry and install pre-commit hooks
+- run install: Install the Python virtualenv and pre-commit hooks
+- run update: Update all dependencies, or a subset passed as arguments
 - run outdated: Find top-level dependencies with outdated constraints
 - run format: Run the code formatters
 - run checks: Run the code checkers
@@ -28,6 +52,7 @@ Basic tasks:
 - run test -c: Run the unit tests with coverage
 - run test -ch: Run the unit tests with coverage and open the HTML report
 - run suite: Run the complete test suite, as for the GitHub Actions CI build
+- run suite -f: Run a faster version of the test suite, omitting some steps
 - run clean: Clean the source tree
 
 Additional tasks:
@@ -78,6 +103,7 @@ The following tasks must always be defined if you want to use the standard
 `run` script:
 
 - install
+- update
 - outdated
 - format
 - checks
@@ -87,22 +113,22 @@ The following tasks must always be defined if you want to use the standard
 - clean
 
 These tasks are needed to set up the local development environment, and they're
-also needed by the standard GitHub Actions build in [gha-shared-workflows](https://github.com/pronovic/gha-shared-workflows/blob/main/.github/workflows/poetry-build-and-test.yml).  They 
+also needed by the standard GitHub Actions build in [gha-shared-workflows](https://github.com/pronovic/gha-shared-workflows/blob/main/.github/workflows/uv-build-and-test.yml).  They 
 are called out separately as "basic tasks" in the help output for the `run`
 script.  All other tasks are listed in alphabetical order in a separate help
 section.  You can change the definition of these tasks to meet the needs of
 your repository, but they must exist.
 
-Additionally, there are two "hidden" tasks that are not shown in the help
-output for the `run` script:
+Additionally, there are several "hidden" tasks that are not shown in the help
+output for the `run` script.
 
-- mypy
-- pylint
+The `dch` and `sync` tasks are hidden utility features that simplify day-to-day
+development but aren't worth documenting publicly.
 
-These tasks exist for easy integration with Pycharm, so it's possible to use
-`run mypy` or `run pylint` from external tools configuration.  If you don't
-want to use one of these tools, just change the task to a no-op (i.e. `echo
-"MyPy is not used in this repo"`).
+The `mypy` and `lint` tasks exist for easy integration with Pycharm.  This way,
+it's possible to use `run mypy` or `run lint` from external tools
+configuration.  If you don't want to use one of these tools, just change the
+task to a no-op (i.e.  `echo "MyPy is not used in this repo"`).
 
 ## Synchronizing Shared Code
 
@@ -128,24 +154,32 @@ A repo can flag a customized task using a marker comment:
 If this marker is found in first 5 lines of code, then the script is considered
 customized and will be ignored.
 
-## Poetry Version & Configuration
+## Dependencies That Rely on Libraries
 
-This framework was originally developed for Poetry v1.2.0 or greater.
-Currently, it assumes you are using Poetry v2.0.0 or greater.
+Python packages that depend on other libraries, especially geospatial packages,
+tend to bundle those libraries along with the published artifacts on PyPI.
+This works ok as long as 1) they're bundling the version of the library that
+you need and 2) you aren't using more than one Python package that depends on
+the same library.  Otherwise, you tend to run into problems.
 
-In older versions of Poetry, there were sometimes problems related to the
-Python keyring, which this framework dealt with by explicitly disabling the
-keyring via the `$PYTHON_KEYRING_BACKEND` environment variable (see [issue #2692](https://github.com/python-poetry/poetry/issues/2692#issuecomment-1235683370)).
+The usual solution for this scenario is to rely on system libraries (installed
+from Debian or Homebrew, etc.).  You install each system library outside of the
+Python build process, and then you tell UV to build and link the Python
+package against the system library rather than the bundled library.  This is
+done using the [no-binary-package](https://docs.astral.sh/uv/reference/settings/#no-binary-package) setting 
+in `pyproject.toml`.
 
-Starting with Poetry v1.8.0, there is config option [keyring.enabled](https://python-poetry.org/docs/configuration/#keyringenabled), 
-which you can use to explicitly disable use of the keyring:
+However, even if you do this, there are some times when you will need to force
+UV to rebuild and relink &mdash; for instance, if the system library has been
+updated, and you want UV to pick up that change.  This requires some extra
+work.  The best solution I've found is to clear those packages out of the UV
+cache:
 
+```shell
+uv cache clean $(grep '^no-binary-package' pyproject.toml | sed 's/^no-binary-package = //' | sed 's/[][,"]//g')
 ```
-$ poetry config keyring.enabled false --local
-$ cat poetry.toml
-[keyring]
-enabled = false
-```
 
-Now that this configuration option is available, there is no need for the hack-ish
-workaround, so this framework no longer sets `$PYTHON_KEYRING_BACKEND`.
+For now, I've decided not to implement this in the run script framework.  It's
+relatively rare, and I don't need it for any of the packages I'm maintaining
+today.  If/when I have a project of my own that needs this, I'll figure out the
+right way to integrate it, probably as a custom task.
